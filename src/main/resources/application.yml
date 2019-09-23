@@ -1,0 +1,44 @@
+server:
+  port: 8080
+mybatis:
+  type-aliases-package: com.project.bean
+  mapper-locations: classpath*:mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100Mb
+      max-request-size: 1000Mb
+  jmx:
+    enabled: false
+  datasource:
+    #url: jdbc:mysql://172.17.0.1:3306/test_system?useSSL=false&serverTimezone=CTT&characterEncoding=UTF-8&autoReconnect=true&allowMultiQueries=true
+    url: jdbc:mysql://47.105.186.115:3306/test_system?useSSL=false&serverTimezone=CTT&characterEncoding=UTF-8&autoReconnect=true&allowMultiQueries=true
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 1000
+      auto-commit: true
+      idle-timeout: 30000
+      pool-name: HikariCP
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+custom:
+  #助通短信
+  zhu_tong:
+    account: sfsfhy
+    password: jLkdrz
+  #静态资源目录
+  static_dir: /data/static/test-system/
+  #微信
+  wx:
+    app-id: wxd04cf729f344bdc3
+    secret: 43d3bc2200df795fca84ada4ff7e7571
+    #商户号
+    merchants-id: 1514521501
+    app-key: IDeZnarJ5s7C9fAOy7ArYBbsyTJ7Xt1t

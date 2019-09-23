@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.dao.OthersDao">
+    <resultMap type="systemModuleBean" id="parentModuleBeans">
+        <id column="module_id" property="module_id"/>
+        <result column="module_name" property="module_name"/>
+        <result column="module_url" property="module_url"/>
+        <result column="parent_id" property="parent_id"/>
+        <result column="sort" property="sort"/>
+        <result column="create_time" property="create_time"/>
+        <association property="systemModuleBeans" resultMap="childModuleBeans"/>
+    </resultMap>
+    <resultMap type="systemModuleBean" id="childModuleBeans">
+        <id column="module_id1" property="module_id"/>
+        <result column="module_name1" property="module_name"/>
+        <result column="module_url1" property="module_url"/>
+        <result column="parent_id1" property="parent_id"/>
+        <result column="sort1" property="sort"/>
+        <result column="create_time1" property="create_time"/>
+    </resultMap>
+    <resultMap id="shiroCacheInfoMap" type="shiroCacheInfo">
+        <id column="account_id" property="account_id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="is_disable" property="is_disable"/>
+        <result column="system_type" property="system_type"/>
+    </resultMap>
+    <resultMap type="institutionBean" id="parentInstitutionBeans">
+        <id column="institution_id" property="institution_id"/>
+        <result column="institution_name" property="institution_name"/>
+        <result column="parent_id" property="parent_id"/>
+        <result column="sort" property="sort"/>
+        <result column="create_time" property="create_time"/>
+        <result column="is_disable" property="is_disable"/>
+        <association property="institutionBeans" resultMap="childInstitutionBeans"/>
+    </resultMap>
+    <resultMap type="institutionBean" id="childInstitutionBeans">
+        <id column="institution_id1" property="institution_id"/>
+        <result column="institution_name1" property="institution_name"/>
+        <result column="parent_id1" property="parent_id"/>
+        <result column="sort1" property="sort"/>
+        <result column="create_time1" property="create_time"/>
+        <result column="is_disable" property="is_disable"/>
+    </resultMap>
+    <resultMap type="areaBean" id="parentAreaTree">
+        <id column="area_id" property="area_id"/>
+        <result column="area_name" property="area_name"/>
+        <result column="area_price" property="area_price"/>
+        <result column="parent_id" property="parent_id"/>
+        <result column="sort" property="sort"/>
+        <association property="areaBeans" resultMap="childAreaTree"/>
+    </resultMap>
+    <resultMap type="areaBean" id="childAreaTree">
+        <id column="area_id1" property="area_id"/>
+        <result column="area_name1" property="area_name"/>
+        <result column="area_price1" property="area_price"/>
+        <result column="parent_id1" property="parent_id"/>
+        <result column="sort1" property="sort"/>
+    </resultMap>
+    <update id="auditSignUpApply" parameterType="signUpApplyBean">
+        update sign_up_apply set state=#{state} where find_in_set(apply_id,#{ids})
+    </update>
+    <update id="deleteSignUpApplyMany" parameterType="signUpApplyBean">
+        delete from sign_up_apply where find_in_set(apply_id,#{ids}) and (start_time &gt; now() or end_time &lt; now())
+    </update>
+    <select id="getSignUpApplyList" parameterType="signUpApplyBean" resultType="signUpApplyBean">
+        select a.*,b.institution_name from sign_up_apply as a inner join institution as b
+        on a.institution_id=b.institution_id
+        where 1=1
+        <if test=" institution_id !=null ">
+            and a.institution_id =#{institution_id}
+        </if>
+        <if test=" state !=null and state !='' ">
+            and state =#{state}
+        </if>
+        order by a.apply_id desc
+    </select>
+    <select id="getExamListDistrict" resultType="examBean">
+        SELECT DISTINCT exam_name FROM exam
+    </select>
+    <select id="getAreaTree" resultMap="parentAreaTree">
+        select a.area_id,a.area_name,a.area_price,a.parent_id,a.sort,
+        b.area_id as area_id1,b.area_name as area_name1,b.area_price as area_price1,b.parent_id as parent_id1,
+        b.sort as sort1
+        from area as a LEFT join area as b on a.area_id=b.parent_id
+        order by a.sort asc,b.sort asc
+    </select>
+    <select id="getInstitutionList" parameterType="institutionBean" resultType="institutionBean">
+        select a.*,b.username,d.area_name from institution as a inner join system_account as b on a.account_id=b.account_id
+        left join area as d on a.area_id=d.area_id
+        order by a.institution_id desc
+    </select>
+    <select id="getInstitutionStudentIds" parameterType="studentBean" resultType="string">
+        select group_concat(student_id) from student where institution_id=#{institution_id} and is_allot=0 and is_pay=1
+        and find_in_set(student_id,#{student_ids})
+    </select>
+    <update id="updateStudentAllotState" parameterType="studentBean">
+        update student set is_allot=1,room_id=#{room_id} where find_in_set(student_id,#{student_ids}) and is_allot=0
+    </update>
+    <select id="getFinancialStatistics" resultType="highChartsBean">
+        SELECT sum(pay_amount) AS `count`,DATE_FORMAT(create_time,'%Y-%m-%d') AS `time` FROM pay_history
+        where pay_state='ok'
+        GROUP BY DATE_FORMAT(create_time,'%Y-%m-%d')
+    </select>
+    <select id="getExamRoomList" parameterType="examRoomBean" resultType="examRoomBean">
+        select a.*,b.institution_name from exam_room as a left join institution as b
+        on a.institution_id=b.institution_id
+        where 1=1
+        <if test=" institution_id !=null">
+            and a.institution_id=#{institution_id}
+        </if>
+        <if test=" name !=null and name !=''  ">
+            and a.name like concat('%',#{name},'%')
+        </if>
+        <if test=" start_time !=null and start_time !=''  ">
+            and a.start_time &gt; #{start_time}
+        </if>
+        <if test=" end_time !=null and end_time !=''  ">
+            and a.end_time &lt; #{end_time}
+        </if>
+        order by a.room_id asc
+    </select>
+    <select id="getWaitAllotStudentCount" parameterType="int" resultType="int">
+        select count(*) from student where institution_id=#{_parameter} and is_allot=0 and is_pay=1 and is_validate=1
+    </select>
+    <update id="payStudentSuccess" parameterType="string">
+        update student set is_pay=1 where find_in_set(student_id,#{ids})
+    </update>
+    <select id="getWaitPayStudentList" parameterType="institutionBean" resultType="studentBean">
+        select a.student_id,a.name,a.level,a.profession
+        from student as a
+        where institution_id=#{institution_id} and is_pay=0 and is_validate=1
+        order by a.student_id asc
+    </select>
+    <insert id="insertStudentMany" parameterType="list">
+        insert into student
+        (
+        `name`,sex,id_card,pinyin,age,birthday,`level`,zip_code,nation,profession,exam_no,country,address,create_time,institution_id,phone,
+        is_validate,error_info,batch_no,ticket_no
+        )
+        values
+        <foreach collection="list" item="student" separator=",">
+            (
+            #{student.name},#{student.sex},#{student.id_card},#{student.pinyin},#{student.age},
+            #{student.birthday},#{student.level},#{student.zip_code},#{student.nation},
+            #{student.profession},#{student.exam_no},#{student.country},#{student.address},now(),
+            #{student.institution_id},#{student.phone},#{student.is_validate},#{student.error_info},
+            #{student.batch_no},#{student.ticket_no}
+            )
+        </foreach>
+    </insert>
+    <select id="getStudentHistoryList" parameterType="studentHistoryBean" resultType="studentHistoryBean">
+        select a.*,b.institution_name from student_history as a left join institution as b on a.institution_id=b.institution_id
+        where 1=1
+        <if test=" name !=null and name !='' ">
+            and a.name like concat('%',#{name},'%')
+        </if>
+        <if test=" phone !=null and phone !='' ">
+            and a.phone like concat('%',#{phone},'%')
+        </if>
+        <if test=" id_card !=null and id_card !='' ">
+            and a.id_card like concat('%',#{id_card},'%')
+        </if>
+        <if test=" profession !=null and profession !=''">
+            and a.profession=#{profession}
+        </if>
+        <if test=" level !=null and level !=''">
+            and a.level=#{level}
+        </if>
+        <if test=" institution_id !=0 and institution_id !=null">
+            and a.institution_id=#{institution_id}
+        </if>
+        <if test=" batch_no !=null and batch_no !=''">
+            and a.batch_no like concat('%',#{batch_no},'%')
+        </if>
+        <if test=" nation !=null and nation !='' ">
+            and a.nation=#{nation}
+        </if>
+        <if test=" ticket_no !=null and ticket_no !='' ">
+            and a.ticket_no like concat('%',#{ticket_no},'%')
+        </if>
+        <if test=" pinyin !=null and pinyin !='' and pinyin==0 ">
+            and isnull(a.pinyin)=1
+        </if>
+        <if test=" pinyin !=null and pinyin !='' and pinyin==1 ">
+            and isnull(a.pinyin)=0
+        </if>
+        <if test=" photo !=null and photo !='' and photo==0 ">
+            and isnull(a.photo)=1
+        </if>
+        <if test=" photo !=null and photo !='' and photo==1 ">
+            and isnull(a.photo)=0
+        </if>
+        order by a.student_id asc
+    </select>
+    <select id="getStudentList" parameterType="studentBean" resultType="studentBean">
+        select a.*,b.institution_name,c.address as exam_address,c.name as room_name,c.start_time,c.end_time from student as a left join institution as b on a.institution_id=b.institution_id
+        left join exam_room as c on a.room_id=c.room_id
+        where 1=1
+        <if test=" name !=null and name !='' ">
+            and a.name like concat('%',#{name},'%')
+        </if>
+        <if test=" id_card !=null and id_card !='' ">
+            and a.id_card like concat('%',#{id_card},'%')
+        </if>
+        <if test=" profession !=null and profession !='' ">
+            and a.profession like concat('%',#{profession},'%')
+        </if>
+        <if test=" institution_id !=0 and institution_id !=null">
+            and a.institution_id=#{institution_id}
+        </if>
+        <if test=" phone !=null and phone !='' ">
+            and a.phone like concat('%',#{phone},'%')
+        </if>
+        <if test=" state !=null and state !='' ">
+            and a.state=#{state}
+        </if>
+        <if test=" is_allot !=null and is_allot !='' ">
+            and a.is_allot=#{is_allot}
+        </if>
+        <if test=" is_pay !=null and is_pay !='' ">
+            and a.is_pay=#{is_pay}
+        </if>
+        <if test=" is_validate !=null and is_validate !='' ">
+            and a.is_validate=#{is_validate}
+        </if>
+        <if test=" level !=null">
+            and a.level=#{level}
+        </if>
+        <if test=" batch_no !=null and batch_no !='' ">
+            and a.batch_no like concat('%',#{batch_no},'%')
+        </if>
+        <if test=" nation !=null and nation !='' ">
+            and a.nation=#{nation}
+        </if>
+        <if test=" ticket_no !=null and ticket_no !='' ">
+            and a.ticket_no like concat('%',#{ticket_no},'%')
+        </if>
+        <if test=" pinyin !=null and pinyin !='' and pinyin==0 ">
+            and isnull(a.pinyin)=1
+        </if>
+        <if test=" pinyin !=null and pinyin !='' and pinyin==1 ">
+            and isnull(a.pinyin)=0
+        </if>
+        <if test=" photo !=null and photo !='' and photo==0 ">
+            and isnull(a.photo)=1
+        </if>
+        <if test=" photo !=null and photo !='' and photo==1 ">
+            and isnull(a.photo)=0
+        </if>
+        order by a.student_id asc
+    </select>
+    <select id="getStudentDetail" parameterType="studentBean" resultType="studentBean">
+        select a.*, b.institution_name
+        from student as a
+                 left join institution as b on a.institution_id = b.institution_id
+        where a.student_id = #{student_id}
+    </select>
+    <select id="getSystemAccountDetail" parameterType="systemAccountBean" resultType="systemAccountBean">
+        select a.*, b.institution_name
+        from system_account as a
+                 left join institution as b on a.institution_id = b.institution_id
+        where a.account_id = #{account_id}
+    </select>
+    <select id="getSystemAccountList" parameterType="systemAccountBean" resultType="systemAccountBean">
+        select * from system_account
+        where 1=1
+        <if test="username !=null and username !=''">
+            and username like concat('%',#{username},'%')
+        </if>
+        <if test="name !=null and name !=''">
+            and name like concat('%',#{name},'%')
+        </if>
+        <if test=" system_type !=null and system_type!=''">
+            and system_type=#{system_type}
+        </if>
+        <if test="is_disable !=null and is_disable !=''">
+            and is_disable=#{is_disable}
+        </if>
+        order by create_time asc
+    </select>
+    <select id="getAccountWithRoleByUsername" parameterType="string" resultMap="shiroCacheInfoMap">
+        SELECT a.account_id, a.username, a.password, (case when ISNULL(b.is_disable)=0 then b.is_disable else a.is_disable end)as is_disable, a.system_type
+        FROM system_account as a left join institution as b on a.institution_id=b.institution_id
+        where a.username = #{username}
+    </select>
+    <select id="getSystemModuleTree" parameterType="systemAccountBean" resultMap="parentModuleBeans">
+        select a.module_id,a.module_name,a.module_url,a.parent_id,a.sort,a.create_time,
+        b.module_id as module_id1,b.module_name as module_name1,b.module_url as module_url1,b.parent_id as parent_id1,
+        b.sort as sort1,b.create_time as create_time1
+        from system_module as a inner join system_module as b on a.module_id=b.parent_id
+        <if test=" module_ids !=null and module_ids !=''">
+            where find_in_set(a.module_id,#{module_ids}) and find_in_set(b.module_id,#{module_ids})
+        </if>
+        order by a.sort asc,b.sort asc,b.create_time asc
+    </select>
+    <select id="getPayHistoryList" parameterType="payHistoryBean" resultType="payHistoryBean">
+        select a.*,b.institution_name from pay_history as a left join institution as b
+        on a.institution_id=b.institution_id
+        where 1=1
+        <if test=" pay_state !=null and pay_state !='' ">
+            and find_in_set(a.pay_state,#{pay_state})
+        </if>
+        <if test=" institution_id !=null ">
+            and a.institution_id=#{institution_id}
+        </if>
+        <if test=" pay_type !=null and pay_type !='' ">
+            and a.pay_type=#{pay_type}
+        </if>
+        order by a.pay_id desc
+    </select>
+    <select id="getPdfStudentList" parameterType="studentBean" resultType="studentBean">
+        select a.name,a.sex,a.birthday,a.nation,a.profession,a.level,a.photo,a.ticket_no as exam_no,b.name as room_no,b.address,b.start_time,b.end_time
+        from student as a inner join exam_room as b on a.room_id=b.room_id
+        where a.is_validate=1 and a.is_allot=1 and a.is_pay=1
+        and a.institution_id=#{institution_id} and find_in_set(student_id,#{student_ids})
+        order by a.student_id asc
+    </select>
+    <select id="getMaxBatchNo" parameterType="institutionBean" resultType="string">
+      select max(batch_no) from institution
+    </select>
+    <select id="getInstitutionSignUpNew" parameterType="int" resultType="signUpApplyBean">
+        SELECT * FROM sign_up_apply WHERE institution_id=#{institution_id} AND state='accept' order by end_time desc limit 1
+    </select>
+    <select id="getInstitutionSignUpNow" parameterType="int" resultType="signUpApplyBean">
+        SELECT * FROM sign_up_apply WHERE institution_id=#{institution_id} and NOW()&gt;=start_time AND NOW() &lt;=end_time AND state='accept'
+    </select>
+    <select id="institutionIsSignUp" parameterType="int" resultType="signUpApplyBean">
+        SELECT * FROM sign_up_apply WHERE institution_id=#{institution_id} and NOW()&gt;=start_time AND NOW() &lt;=end_time AND state!='refuse' limit 1
+    </select>
+    <update id="updateStudentPayStateMany" parameterType="studentBean">
+        update student set is_pay=#{is_pay} where find_in_set(student_id,#{student_ids})
+    </update>
+    <select id="getStudentMaxLevel" parameterType="studentBean" resultType="int">
+        select max(`pass_level`) from student_history where id_card=#{id_card} and profession=#{profession}
+    </select>
+    <select id="getExamRoomStudentList" parameterType="examRoomBean" resultType="studentBean">
+        select * from student where
+                find_in_set(student_id,(select student_ids from exam_room where room_id=#{room_id}))
+    </select>
+    <select id="getStudentBatchNoList" parameterType="map" resultType="map">
+        <if test=" type=='student' ">
+            select distinct batch_no from student
+            where ISNULL(batch_no)=0
+            <if test=" institution_id !=0and institution_id !=null">
+                and institution_id=#{institution_id}
+            </if>
+        </if>
+        <if test=" type=='student_history' ">
+            select distinct batch_no from student_history
+            where ISNULL(batch_no)=0
+            <if test=" institution_id !=0and institution_id !=null">
+                and institution_id=#{institution_id}
+            </if>
+        </if>
+    </select>
+    <delete id="deleteStudent" parameterType="studentBean">
+        delete from student where find_in_set(student_id,#{student_ids}) and is_pay!=1
+    </delete>
+    <delete id="deleteStudentHistory" parameterType="studentBean">
+        delete from student_history where find_in_set(student_id,#{student_ids})
+    </delete>
+    <select id="getMaxTicketNoByDate" parameterType="string" resultType="string">
+      select max(ticket_no) from student where ticket_no like concat(#{date},'%')
+    </select>
+    <update id="importStudentScore" parameterType="studentHistoryBean">
+        <foreach collection="list" item="student" separator=";">
+            update student_history set pass_level=#{student.pass_level},certificate_no=#{student.certificate_no} where ticket_no=#{student.ticket_no}
+        </foreach>
+    </update>
+    <select id="getDistinctProfessionList" parameterType="map" resultType="string">
+        select group_concat(distinct profession) from
+        <if test=" type=='student' ">
+          student
+        </if>
+        <if test=" type=='student_history' ">
+            student_history
+        </if>
+        where ISNULL(profession)=0 and profession!=''
+        <if test=" institution_id !=null and institution_id !=0">
+            and institution_id=#{institution_id}
+        </if>
+    </select>
+    <select id="getDistinctNationList" parameterType="map" resultType="string">
+        select group_concat(distinct nation) from
+        <if test=" type=='student' ">
+            student
+        </if>
+        <if test=" type=='student_history' ">
+            student_history
+        </if>
+        where ISNULL(nation)=0 and nation!=''
+        <if test=" institution_id !=null and institution_id !=0">
+            and institution_id=#{institution_id}
+        </if>
+    </select>
+    <select id="getNoPhotoStudentCount" parameterType="int" resultType="int">
+        select count(student_id) from student where institution_id=#{institution_id} and (isnull(photo)=1 or photo='')
+    </select>
+    <select id="getInstitutionPhoneByUsername" parameterType="string" resultType="map">
+        select phone,institution_name,institution_id,account_id from institution where institution_id=(select institution_id from system_account where username=#{username})
+    </select>
+    <insert id="insertStudentHistoryMany" parameterType="list">
+        insert into student_history
+        (
+        `name`,sex,id_card,pinyin,age,birthday,`level`,phone,profession,create_time,ticket_no,certificate_no,pass_level,
+        country,nation,institution_id,note
+        )
+        values
+        <foreach collection="list" item="student" separator=",">
+            (
+            #{student.name},#{student.sex},#{student.id_card},#{student.pinyin},#{student.age},
+            #{student.birthday},#{student.level},#{student.phone},#{student.profession},now(),
+            #{student.ticket_no},#{student.certificate_no},#{student.pass_level},
+            #{student.country},#{student.nation},#{student.institution_id},#{student.note}
+            )
+        </foreach>
+    </insert>
+    <select id="queryResults" parameterType="string" resultType="studentHistoryBean">
+        select a.*,b.address as exam_room_address from student_history as a left join exam_room as b on a.room_id=b.room_id
+        where
+        a.ticket_no=#{search} or a.certificate_no=#{search} or a.id_card=#{search}
+        order by a.student_id desc
+        limit 1
+    </select>
+    <update id="studentPassAuditMany" parameterType="string" >
+        update student set state=0,is_validate=1,error_info='' where find_in_set(student_id,#{student_ids})
+    </update>
+    <select id="getNotImportScoreBatchNoList" parameterType="institutionBean" resultType="string">
+        select group_concat(batch_no) from student_history where institution_id=#{institution_id} and pass_level=0 and ISNULL(batch_no)=0
+    </select>
+</mapper>

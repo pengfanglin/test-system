@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+		<title>国美艺考贵州成绩查询中心</title>
+		<style type="text/css">
+			*{
+				box-sizing: border-box;
+			}
+			body {
+				padding: 0;
+				margin: 0;
+			}
+
+			a {
+				color: #333;
+				text-decoration: none
+			}
+
+			.content {
+				width: 1200px;
+				margin: 0 auto;
+			}
+			/*布局-display*/
+			.flex{ display: -ms-flexbox; display: -webkit-flex; display: flex; }
+			.flex-list{
+				display: -webkit-flex;
+			    display: flex;
+			    -webkit-flex-wrap: wrap;
+			    flex-wrap: wrap;
+			}
+			.flex-item{	display: block;	-webkit-box-flex: 1;-webkit-flex: 1;flex: 1;text-align: center;}
+			.flex-item .ellipsis{font-size: 14px;}
+			.fill-block{display: block;width:100%;}
+			.divline{display: inline-block;}
+			.block{display: block;}
+			.hidden{display: none!important;}
+			/*布局-单行省略*/
+			.ellipsis{
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				
+			}
+			
+			/*布局-多行省略*/
+			.ellipsis-more2{
+				display: -webkit-box;
+				-webkit-box-orient: vertical;
+				-webkit-line-clamp: 2;
+				overflow: hidden
+			}
+			.ellipsis-more3{
+				display: -webkit-box;
+				-webkit-box-orient: vertical;
+				-webkit-line-clamp: 3;
+				overflow: hidden
+			}
+			.ellipsis-more4{
+				display: -webkit-box;
+				-webkit-box-orient: vertical;
+				-webkit-line-clamp: 4;
+				overflow: hidden
+			}
+			.ellipsis-s{
+				height:42px;
+				line-height: 21px;
+				overflow: hidden;
+			}
+			.ellipsis-text{
+				font-size: 14px;
+				margin:0;
+			}
+			.flex-center01{display: flex;justify-content: center;}
+			.flex-center{display: flex;align-items: center;}
+			.flex-center02{display: flex;align-items: center;justify-content: center;}
+			.flex-end{display: flex;align-items: flex-end}
+			.flex-end01{display: flex;flex-wrap:wrap;align-content: space-between}
+			.min-height{min-height: 100vh;}
+			/*布局-两端对齐*/
+			.flex-justify{
+				position: relative;
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-pack: justify;
+				-webkit-justify-content: space-between;
+				justify-content: space-between;
+				-webkit-box-align: center;
+				-webkit-align-items: center;
+				align-items: center;
+			}
+			/*盒子模型*/
+			.boxsizing{box-sizing:border-box}
+			.content-box{box-sizing: content-box;}
+			.body-img img,.body-img a img{width: 100%;}
+			.top {
+				width: 100%;
+				height: 120px;
+				line-height: 120px;
+				text-align: center;
+				border-bottom: 2px solid #bbb;
+			}
+			.top .topleft{
+				margin-right: 30px;
+			}
+			.top_left,
+			.top_right {
+				float: left
+			}
+
+			.top span {
+				color: #333;
+				font-size: 30px;
+			}
+
+			.menu li {
+				float: left;
+				margin: 10px;
+				list-style-type: none;
+			}
+			.tac{text-align: center;}
+			.widthp25{width: 25%;}
+			.widthp50{width: 50%;}
+			.chaxun{margin-top: 50px;}
+			.input-group-ui{position: relative;height: 32px;line-height: 32px;}
+			.icon-search{padding:0 5px;height: 20px;line-height: 20px;text-align: center;line-height: 20px;margin-left: 5px;border: 1px solid #333;margin-top: 6px;background-color: #333}
+			.icon-search .iconfont{color:#fff;font-size:14px}
+			input[type='search']{height: 20px;line-height: 20px;margin-top: 6px;padding-left: 6px;border: 1px solid #333;}
+			.search-left{padding-right: 50px;}
+			.search-right{padding-left: 50px;}
+			.search-result{width:100%;margin-top: 20px;padding: 10px 0;}
+			.width500{width: 500px;}
+			.height40{height: 40px;line-height: 40px;}
+			.border01{border-left: 1px solid #ddd;border-bottom: 1px solid #ddd;}
+			.border02{border-right: 1px solid #ddd;border-top: 1px solid #ddd;}
+			.mb20{margin-bottom: 20px;}
+			.tips-left{padding: 20px 0 20px 20px}
+			.tips-left p{color: #333;font-size: 14px;}
+			
+			/* 字体图标样式 s */
+			@font-face {font-family: "iconfont";
+			  src: url('//at.alicdn.com/t/font_1031211_aaeuedzq3qt.eot?t=1548383016664'); /* IE9 */
+			  src: url('//at.alicdn.com/t/font_1031211_aaeuedzq3qt.eot?t=1548383016664#iefix') format('embedded-opentype'), /* IE6-IE8 */
+			  url('data:application/x-font-woff2;charset=utf-8;base64,d09GMgABAAAAAAKwAAsAAAAABlwAAAJjAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCCcApogQsBNgIkAwgLBgAEIAWEbQcwG7EFyB6SJEXq0J4m+IvuAyCMCKK1snpnHlEhSkRNHAfsYlQUgdH3PjHiSaigEbf/c5kDNCp3mzyWQ1Zoi/kt/740HTg2YkZNWJbTQMJNa7drL2gNOGgj6zV+n7h3+n8DKJD5zrtc5pg0aQDGAQW0N0aRlUniDWMXvMDHBGr16Cltb+wdQlNmrwrEq8CzoFkIyzLLVQuVDQezeIcK1cWbFYC30ffjPybRpFCR2A17T9ZdWPo15BTwYi48CAhECOh4BRKmgEwcNaZ3VARjVNSmqwbAsWqDX9MzgVUc1STYX2dX14MuKH4miSd9VN4CZCRD+ucn3UCqr88P3+9Ob29Prq+Pbm5iYV4AFcdww+nx4vF3UWJ3vqodTCgl8XUulUDD1dy3SpK+OcbYd9HOfsB5Pvfw+v3nsQRQVrrchRKC4ba7G6Np+VfXZXCffRqLgmVlDPOC6j17gj8kGdiTDZltKbImacwXulTO3FSrFmVgf6u/qfqO28mHah035a3SnSGpNkRm+hQq1JlGpWprqDVp83idNqwicg0m3AKEZvcoNPqBpNkbmem/qNDpH5Wao4JaJ9F2YZ2RCNpbTJaQi/Y5Bo5OlWuTdly7T14RW5yXRcxj4jyI4XgwKuc2KSVeYkt+4k1EFCrWCW6A5yiONWasQ3Jk4ItkM8OhanrTwNEJtG1hxCKIC9nOoYBDS6lguGhXPr+PeAoxC3d01fmPEZYLxkdjA6MB5KY6HdT1KK/kTngmhFCQwrQE2gDzSCymoax5Xog4xIA/IZmZMXQGqaHqwfba5O+OQC3bUIQzK6l8rYu80AAAAA==') format('woff2'),
+			  url('//at.alicdn.com/t/font_1031211_aaeuedzq3qt.woff?t=1548383016664') format('woff'),
+			  url('//at.alicdn.com/t/font_1031211_aaeuedzq3qt.ttf?t=1548383016664') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+			  url('//at.alicdn.com/t/font_1031211_aaeuedzq3qt.svg?t=1548383016664#iconfont') format('svg'); /* iOS 4.1- */
+			}
+
+			.iconfont {
+			  font-family: "iconfont" !important;
+			  font-size: 16px;
+			  font-style: normal;
+			  -webkit-font-smoothing: antialiased;
+			  -moz-osx-font-smoothing: grayscale;
+			}
+
+			.icon-sousuo:before {
+			  content: "\e624";
+			}
+			/* 字体图标样式 e */
+			.input-text{width: 160px;margin-right: 10px;}
+			.requirename{width: 100px;}
+			.widthp75{width: 450px}
+			.search-result .flex .widthp25:nth-child(1),
+			.search-result .flex .widthp25:nth-child(3){
+				width: 100px;
+			}
+			.search-result .flex .widthp25:nth-child(2),
+			.search-result .flex .widthp25:nth-child(4){
+				width: 175px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="content">
+			<div class="top">
+				<!-- <div class="top_left">
+					<img style="margin-top: 25px;" src="http://www.fylac.com/skin/images/logo.jpg" alt="全国美术书法考级网" />
+				</div> -->
+				<span class="topleft">全国美术书法等级考试</span><span>查询系统</span>
+				<!--<div class="top_right">
+					
+					 <div class="pluginContent" style=" margin-top: -61px">
+						<ul class="menu reset">
+							<li class="mli"> <a class="mod-first nav_home active" href="/" title="首页"> 首页 </a> </li>
+							<li class="mli"> <a class="mod-first" title="政策法规" href="/plus/list.php?tid=34">政策法规</a> </li>
+							<li class="mli"> <a class="mod-first" title="通知公告" href="/tongzhigonggao/">通知公告</a> </li>
+							<li class="mli"> <a class="mod-first" title="报考指南" href="/baokaozhinan/">报考指南</a> </li>
+							<li class="mli"> <a class="mod-first" title="考试大纲" href="/plus/list.php?tid=1">考试大纲</a> </li>
+							<li class="mli"> <a class="mod-first" title="考级作品" href="/plus/list.php?tid=7">考级作品</a> </li>
+							<li class="mli"> <a class="mod-first" title="成绩查询" href="/plus/list.php?tid=18">成绩查询</a> </li>
+							<li class="mli"> <a class="mod-first" title="申请承办" href="/shenqingchengban/">申请承办</a> </li>
+							<li class="mli"> <a class="mod-first" title="联系我们" href="/plus/list.php?tid=6">联系我们</a> </li>
+						</ul>
+					</div>
+				</div> -->
+			</div>
+
+			<div class="chaxun">
+				<!--查询放此处-->
+				<div class="widthp100 flex">
+				</div>
+				<div class="widthp100 flex">
+					<div class="widthp50 search-left">
+						<div class="widthp100">
+							<div class="widthp100  mb20">
+								成绩查询系统
+							</div>
+							<div class="input-group-ui">
+								<div class="flex widthp100">
+									请输入准考证号：<input type="search" class="input-text" name="" id="input-search-left" value="" placeholder="请输入准考证号"/>
+									<div class="icon-search" id="search-left">
+										<span class="iconfont">查询</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="widthp100 search-result" id="search-result-left">
+							<div class="border02">
+								<div class="flex width200">
+									<div class="height40 widthp25 border01 tac">
+										姓名：
+									</div>
+						
+									<div class="height40 widthp75 border01 tac" id="nameleft">
+										
+									</div>
+								</div>
+								<div class="flex width200">
+									<div class="height40 widthp25 border01 tac">
+										性别：
+									</div>
+									<div class="height40 widthp25 border01 tac" id="sexleft">
+										
+									</div>
+									<div class="height40 widthp25 border01 tac">
+										出生年月：
+									</div>
+									<div class="height40 widthp25 border01 tac" id="birthdayleft">
+										
+									</div>
+								</div>
+								<div class="flex width200">
+									<div class="height40 widthp25 border01 tac">
+										报考科目:
+									</div>
+									<div class="height40 widthp25 border01 tac" id="professionleft">
+										
+									</div>
+									<div class="height40 widthp25 border01 tac">
+										通过级别:
+									</div>
+									<div class="height40 widthp25 border01 tac" id="levelleft">
+										
+									</div>
+								</div>
+								<div class="flex width200">
+									<div class="height40 widthp25 border01 tac">
+										证书颁发: 
+									</div>
+									<div class="height40 widthp25 border01 tac" id="certificate_noleft">
+										中国美术学院
+									</div>
+									<div class="height40 widthp25 border01 tac">
+										考试地区: 
+									</div>
+									<div class="height40 widthp25 border01 tac" id="addressleft">
+										贵州
+									</div>
+								</div>
+								<!--<div class="flex width200">
+									<div class="height40 widthp25 border01 tac">
+										主管机构:
+									</div>
+									<div class="height40 widthp75 border01 tac" id="">
+										文化部全国社会艺术水平考级中心
+									</div>
+								</div>-->
+							</div>
+						</div>
+						<ul class="tips-left">
+							<li>1、成绩查询只提供当年数据查询，以收到实际证书为准</li>
+							<li>2、若有不清楚之处，请致电0851-85831139查询</li>
+						</ul>
+					</div>
+					<div class="widthp50 search-right">
+						<div class="widthp100">
+							<div class="widthp50 mb20">
+								证书真伪查询系统
+							</div>
+							<div class="input-group-ui">
+								<div class="flex">
+									<input type="search" name="" class="" id="input-search-right" placeholder="请输入证书编码"/>
+									<div class="icon-search" id="search-right">
+										<span class="iconfont">查询</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="widthp100 search-result" id="search-result-right">
+							<div class="border02">
+								<div class="flex width200">
+									<div class="height40 widthp25 border01 tac">
+										证书编号：
+									</div>
+									<div class="height40 widthp25 border01 tac" id="id_cardright">
+										
+									</div>
+									<div class="height40 widthp25 border01 tac">
+										姓名：
+									</div>
+									<div class="height40 widthp25 border01 tac" id="nameright">
+										
+									</div>
+								</div>
+								<div class="flex width200">
+									<div class="height40 widthp25 border01 tac">
+										性别：
+									</div>
+									<div class="height40 widthp25 border01 tac" id="sexright">
+										
+									</div>
+									<div class="height40 widthp25 border01 tac">
+										出生年月：
+									</div>
+									<div class="height40 widthp25 border01 tac" id="birthdayright">
+										
+									</div>
+								</div>
+								<div class="flex width200">
+									<div class="height40 widthp25 border01 tac">
+										报考科目:
+									</div>
+									<div class="height40 widthp25 border01 tac" id="professionright">
+										
+									</div>
+									<div class="height40 widthp25 border01 tac">
+										通过级别:
+									</div>
+									<div class="height40 widthp25 border01 tac" id="levelright">
+										
+									</div>
+								</div>
+								<div class="flex width200">
+									<div class="height40 widthp25 border01 tac">
+										证书颁发: 
+									</div>
+									<div class="height40 widthp25 border01 tac" id="certificate_noright">
+										中国美术学院
+									</div>
+									<div class="height40 widthp25 border01 tac">
+										考试地区: 
+									</div>
+									<div class="height40 widthp25 border01 tac" id="addressright">
+										贵州
+									</div>
+								</div>
+								<!--<div class="flex width200">
+									<div class="height40 widthp25 border01 tac">
+										主管机构:
+									</div>
+									<div class="height40 widthp75 border01 tac" id="pass_level">
+										文化部全国社会艺术水平考级中心
+									</div>
+								</div>-->
+							</div>
+						</div>
+						<ul class="tips-left">
+							<li>1.证书真伪查询数据提供自2017年起考生可查询</li>
+							<li>2.若有不清楚之处，请致电4008050065</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<!-- <script src="js/jquery.min.js"></script> -->
+	<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script>
+		// 左边查询
+		$('#search-left').on('click',function(){
+			let search=$('#input-search-left').val();
+			if(search==''){
+				$('#search-result-left').text('请输入准考证或身份证号码');
+				return;
+			}
+			let url='http://exam.qubaotang.cn/api/institutionController/queryResults';
+			$.ajax({
+				type:"post",
+				url:url,
+				async:true,
+				data: {'search':search},
+				dataType: 'json',
+				success:function(data){
+					console.log(data.data)
+					//let datano=data.data;
+					
+					let dataresult=data.data;
+					let datano=JSON.stringify(data.data);
+					if(datano=="{}"){
+						$('#search-result-left').text('此号码无查询结果！');
+						return false;
+					}
+					$('#id_cardleft').text(dataresult.id_card);
+					$('#nameleft').text(dataresult.name);
+					$('#sexleft').text(dataresult.sex);
+					$('#birthdayleft').text(dataresult.birthday);
+					$('#professionleft').text(dataresult.profession);
+					$('#levelleft').text(dataresult.pass_level);
+					$('#birthdayleft').text(dataresult.birthday);
+					//$('#certificate_noleft').text(dataresult.certificate_no);
+					
+				},
+				error:function(){
+					console.log('请求错误')
+				}
+				
+			});
+			
+		})
+		
+		// 右边查询
+		$('#search-right').on('click',function(){
+			//$('#search-result-right').text('没有找到你要的内容，请从新输入关键字（右边）')
+			let search=$('#input-search-right').val();
+			
+			if(search==''){
+				$('#search-result-right').text('请输入证书编码');
+				return;
+			}
+			let url='http://exam.qubaotang.cn/api/institutionController/queryResults';
+			$.ajax({
+				type:"post",
+				url:url,
+				async:true,
+				data: {'search':search},
+				dataType: 'json',
+				success:function(data){
+					console.log(data)
+					
+					let dataresult=data.data;
+					let datano=JSON.stringify(data.data);
+					if(datano=="{}"){
+						$('#search-result-right').text('此号码无查询结果！');
+						return false;
+					}
+					$('#id_cardright').text(dataresult.certificate_no);
+					$('#nameright').text(dataresult.name);
+					$('#sexright').text(dataresult.sex);
+					$('#birthdayright').text(dataresult.birthday);
+					$('#professionright').text(dataresult.profession);
+					$('#levelright').text(dataresult.pass_level);
+					$('#certificate_noright').text();
+					$('#birthdayright').text(dataresult.birthday);
+				},
+				error:function(){
+					console.log('请求错误')
+				}
+				
+			});
+		})
+		
+	</script>
+</html>
