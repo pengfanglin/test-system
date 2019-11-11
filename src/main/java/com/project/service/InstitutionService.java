@@ -298,28 +298,28 @@ public class InstitutionService {
         }
         if (!OthersUtils.isEmpty(studentBean.getId_card()) && !OthersUtils.isEmpty(studentBean.getLevel()) && !OthersUtils.isEmpty(studentBean.getProfession()) && studentBean.getAge() != null) {
             Integer maxLevel = daoFactory.othersDao.getStudentMaxLevel(new StudentBean().setId_card(studentBean.getId_card()).setProfession(studentBean.getProfession()));
-            if (studentBean.getAge() < 15) {
-                if ( "儿童画,速写".contains(studentBean.getProfession())) {
-                    if(studentBean.getLevel()>2){
-                        validate = false;
-                        sb.append("首次报考").append(studentBean.getProfession()).append("最高报考2级/");
-                    }
-                }else {
-                    if(studentBean.getLevel()>5){
-                        validate = false;
-                        sb.append("首次报考").append(studentBean.getProfession()).append("最高报考5级/");
+            if(maxLevel==null){
+                if (studentBean.getAge() < 15) {
+                    if ( "儿童画,速写".contains(studentBean.getProfession())) {
+                        if(studentBean.getLevel()>2){
+                            validate = false;
+                            sb.append("首次报考").append(studentBean.getProfession()).append("最高报考2级/");
+                        }
+                    }else {
+                        if(studentBean.getLevel()>5){
+                            validate = false;
+                            sb.append("首次报考").append(studentBean.getProfession()).append("最高报考5级/");
+                        }
                     }
                 }
-            } else {
-                if (maxLevel != null && maxLevel != 0) {
-                    if (studentBean.getLevel() <= maxLevel) {
-                        validate = false;
-                        sb.append("已通过").append(studentBean.getProfession()).append(maxLevel).append("级/");
-                    }
-                    if (studentBean.getLevel() - maxLevel > 1) {
-                        validate = false;
-                        sb.append("已通过").append(studentBean.getProfession()).append(maxLevel).append("级，只能报考").append(maxLevel + 1).append("级/");
-                    }
+            }else{
+                if (studentBean.getLevel() <= maxLevel) {
+                    validate = false;
+                    sb.append("已通过").append(studentBean.getProfession()).append(maxLevel).append("级/");
+                }
+                if (studentBean.getLevel() - maxLevel > 1) {
+                    validate = false;
+                    sb.append("已通过").append(studentBean.getProfession()).append(maxLevel).append("级，只能报考").append(maxLevel + 1).append("级/");
                 }
             }
         }
